@@ -1,22 +1,16 @@
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
-
-
-
 var x = canvas.width/2;
 var y = canvas.height - 30;
 var ballRadius = 5;
 var dx = 2;
 var dy = -2;
-
 var paddleHeight = 10;
 var paddleWidth = 75;
 var paddleX = (canvas.width - paddleWidth)/2;
 var paddleY = (canvas.height - paddleHeight);
-
 var leftPressed = false;
 var rightPressed = false;
-
 var brickWidth = 40;
 var brickHeight = 12;
 var brickRowCount = 3;
@@ -24,10 +18,9 @@ var brickColumnCount = 5;
 var brickPadding = 8;
 var brickOffsetTop = 15;
 var brickOffsetLeft = 30;
-
 var score = 0;
-
 var bricks = [];
+
 for(var c = 0; c < brickColumnCount ; c++)
 {
     bricks[c] = [];
@@ -65,6 +58,7 @@ function drawBricks()
 
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
+document.addEventListener('mousemove', mouseMoveHandler);
 
 function keyDownHandler(e)
 {
@@ -78,7 +72,6 @@ function keyDownHandler(e)
         rightPressed = true;
     }
 }
-
 function keyUpHandler(e)
 {
     if(e.keyCode == 37)
@@ -90,9 +83,14 @@ function keyUpHandler(e)
         rightPressed = false;
     }
 }
-
-
-
+function mouseMoveHandler(e)
+{
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width)
+    {
+        paddleX = relativeX - paddleWidth/2;
+    }
+}
 function drawBall()
 {
     ctx.beginPath();
@@ -101,7 +99,6 @@ function drawBall()
     ctx.fill();
     ctx.closePath();
 }
-
 function drawPaddle()
 {
     ctx.beginPath();
@@ -110,7 +107,6 @@ function drawPaddle()
     ctx.fill();
     ctx.closePath();
 }
-
 function collisionDetection()
 {
     for(c = 0; c < brickColumnCount; c++)
@@ -135,7 +131,6 @@ function collisionDetection()
         }
     }
 }
-
 function drawScore()
 {
     ctx.font = "12px Arial";
@@ -151,7 +146,6 @@ function draw()
     drawBricks();
     collisionDetection();
     drawScore();
-
     if( y + dy < ballRadius)
     {
         dy = -dy;
@@ -181,11 +175,8 @@ function draw()
     {
         paddleX += 7;
     }
-
     x += dx;
     y +=dy;
 }
-
-
 
 setInterval(draw,20);
