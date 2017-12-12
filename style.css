@@ -5,8 +5,8 @@
 }
 #myCanvas
 {
-    width: 1080px;
-    height: 620px;
+    width: 800px;
+    height: 600px;
     display: block;
     margin: 0 auto;
     background-color: darkgray;
