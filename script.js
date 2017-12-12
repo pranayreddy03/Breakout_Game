@@ -5,7 +5,7 @@ var ctx = canvas.getContext('2d');
 
 var x = canvas.width/2;
 var y = canvas.height - 30;
-var ballRadius = 10;
+var ballRadius = 5;
 var dx = 2;
 var dy = -2;
 
@@ -17,56 +17,49 @@ var paddleY = (canvas.height - paddleHeight);
 var leftPressed = false;
 var rightPressed = false;
 
+var brickWidth = 40;
+var brickHeight = 12;
+var brickRowCount = 3;
+var brickColumnCount = 5;
+var brickPadding = 10;
+var brickOffsetTop = 20;
+var brickOffsetLeft = 30;
+
+var bricks = [];
+for(var c = 0; c < brickColumnCount ; c++)
+{
+    bricks[c] = [];
+    for(var r = 0; r < brickRowCount ; r++)
+    {
+        bricks[c][r] = {
+                            x : 0,
+                            y :0
+                       }
+    }
+}
+
+function drawBricks()
+{
+    for(c = 0; c < brickColumnCount; c++)
+    {
+        for(r=0; r< brickRowCount; r++)
+        {
+            var brickX = c*(brickWidth + brickPadding) + brickOffsetLeft;
+            var brickY = r*(brickHeight + brickPadding) + brickOffsetTop;
+
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "brown";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
+
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
-
-function draw()
-{
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    drawBall();
-    drawPaddle();
-
-    if( y + dy < ballRadius || y + dy > canvas.height-ballRadius)
-    {
-        dy = -dy;
-    }
-    if( x + dx < ballRadius || x + dx > canvas.width-ballRadius)
-    {
-        dx = -dx;
-    }
-
-    if(leftPressed && paddleX > 0)
-    {
-        paddleX -= 7;
-    }
-    else if(rightPressed && paddleX < canvas.width - paddleWidth)
-    {
-        paddleX += 7;
-    }
-
-    x += dx;
-    y +=dy;
-}
-
-function drawBall()
-{
-    ctx.beginPath();
-    ctx.arc(x,y,ballRadius,0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
-}
-
-function drawPaddle()
-{
-    ctx.beginPath();
-    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
-}
-
-
 
 function keyDownHandler(e)
 {
@@ -93,4 +86,67 @@ function keyUpHandler(e)
     }
 }
 
-setInterval(draw,10);
+
+
+function drawBall()
+{
+    ctx.beginPath();
+    ctx.arc(x,y,ballRadius,0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawPaddle()
+{
+    ctx.beginPath();
+    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw()
+{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawBall();
+    drawPaddle();
+    drawBricks();
+
+    if( y + dy < ballRadius)
+    {
+        dy = -dy;
+    }
+    else if( y + dy > canvas.height - ballRadius)
+    {
+       if(x > paddleX && x < paddleX + paddleWidth)
+        {
+            dy = -dy;
+        }
+        else
+       {
+        alert('GAME OVER');
+        document.location.reload();
+       }
+    }
+    if( x + dx < ballRadius || x + dx > canvas.width-ballRadius)
+    {
+        dx = -dx;
+    }
+
+    if(leftPressed && paddleX > 0)
+    {
+        paddleX -= 7;
+    }
+    else if(rightPressed && paddleX < canvas.width - paddleWidth)
+    {
+        paddleX += 7;
+    }
+
+    x += dx;
+    y +=dy;
+}
+
+
+
+setInterval(draw,11);
