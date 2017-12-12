@@ -25,6 +25,8 @@ var brickPadding = 8;
 var brickOffsetTop = 15;
 var brickOffsetLeft = 30;
 
+var score = 0;
+
 var bricks = [];
 for(var c = 0; c < brickColumnCount ; c++)
 {
@@ -122,10 +124,23 @@ function collisionDetection()
                 {
                     dy = -dy;
                     b.status = 0;
+                    score++;
+                    if(score == brickRowCount * brickColumnCount)
+                    {
+                        alert('You Win! Congratulations!!!');
+                        document.location.reload();
+                    }
                 }
             }
         }
     }
+}
+
+function drawScore()
+{
+    ctx.font = "12px Arial";
+    ctx.fillText("Score: " + score, 245, 12);
+    ctx.fillStyle = "green";
 }
 
 function draw()
@@ -135,6 +150,7 @@ function draw()
     drawPaddle();
     drawBricks();
     collisionDetection();
+    drawScore();
 
     if( y + dy < ballRadius)
     {
