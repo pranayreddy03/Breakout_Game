@@ -21,8 +21,8 @@ var brickWidth = 40;
 var brickHeight = 12;
 var brickRowCount = 3;
 var brickColumnCount = 5;
-var brickPadding = 10;
-var brickOffsetTop = 20;
+var brickPadding = 8;
+var brickOffsetTop = 15;
 var brickOffsetLeft = 30;
 
 var bricks = [];
@@ -33,7 +33,8 @@ for(var c = 0; c < brickColumnCount ; c++)
     {
         bricks[c][r] = {
                             x : 0,
-                            y :0
+                            y : 0,
+                            status : 1
                        }
     }
 }
@@ -44,16 +45,18 @@ function drawBricks()
     {
         for(r=0; r< brickRowCount; r++)
         {
-            var brickX = c*(brickWidth + brickPadding) + brickOffsetLeft;
-            var brickY = r*(brickHeight + brickPadding) + brickOffsetTop;
+            if(bricks[c][r].status == 1) {
+                var brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+                var brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
 
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "brown";
-            ctx.fill();
-            ctx.closePath();
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "brown";
+                ctx.fill();
+                ctx.closePath();
+            }
         }
     }
 }
@@ -106,12 +109,32 @@ function drawPaddle()
     ctx.closePath();
 }
 
+function collisionDetection()
+{
+    for(c = 0; c < brickColumnCount; c++)
+    {
+        for(r = 0; r < brickRowCount; r++)
+        {
+            var b = bricks[c][r];
+            if(b.status == 1)
+            {
+                if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight)
+                {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
+        }
+    }
+}
+
 function draw()
 {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     drawBall();
     drawPaddle();
     drawBricks();
+    collisionDetection();
 
     if( y + dy < ballRadius)
     {
@@ -149,4 +172,4 @@ function draw()
 
 
 
-setInterval(draw,11);
+setInterval(draw,20);
